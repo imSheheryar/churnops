@@ -16,9 +16,17 @@ SUMMARY_PATH = os.environ.get("GITHUB_STEP_SUMMARY")
 
 def _load(path: Path) -> dict:
     try:
-        return json.loads(path.read_text())
+        payload = json.loads(path.read_text())
     except (FileNotFoundError, json.JSONDecodeError):
         return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def _fmt(value, digits: int = 4) -> str:
+    try:
+        return f"{float(value):.{digits}f}"
+    except (TypeError, ValueError):
+        return "n/a"
 
 
 def main() -> int:
@@ -26,21 +34,22 @@ def main() -> int:
     validation = _load(ROOT / "reports" / "validation_report.json")
     drift = _load(ROOT / "reports" / "drift_report.json")
 
-    champion = metrics.get("champion", {})
-    challenger = metrics.get("challenger", {})
+    test = metrics.get("test") or {}
+    challengers = metrics.get("challengers") or {}
+    challenger_name, challenger = next(iter(challengers.items()), ("n/a", {}))
+    checks = validation.get("checks") or []
+    passed = sum(1 for check in checks if check.get("passed"))
+
     rows = [
-        ("Champion", champion.get("model", "n/a")),
-        ("PR-AUC", f"{champion.get('pr_auc', 0):.4f}"),
-        ("ROC-AUC", f"{champion.get('roc_auc', 0):.4f}"),
-        ("Recall", f"{champion.get('recall', 0):.3f}"),
-        ("Precision", f"{champion.get('precision', 0):.3f}"),
-        ("Decision threshold", f"{metrics.get('threshold', 0):.3f}"),
-        ("Expected savings / 1k", f"${metrics.get('expected_savings_per_1000', 0):,.0f}"),
-        (
-            "Validation checks passed",
-            f"{sum(c['passed'] for c in validation.get('checks', []))}/{len(validation.get('checks', []))}",
-        ),
-        ("Drift status", drift.get("status", "not run")),
+        ("Champion", str(metrics.get("champion", "n/a"))),
+        ("PR-AUC", _fmt(test.get("pr_auc"))),
+        ("ROC-AUC", _fmt(test.get("roc_auc"))),
+        ("Recall", _fmt(test.get("recall"), 3)),
+        ("Precision", _fmt(test.get("precision"), 3)),
+        ("Decision threshold", _fmt(test.get("threshold"), 2)),
+        ("Expected savings / 1k", f"${float(test.get('economics_savings_per_1k') or 0):,.0f}"),
+        ("Validation checks passed", f"{passed}/{len(checks)}"),
+        ("Latest drift report", str(drift.get("status", "not run"))),
     ]
 
     lines = ["## ChurnOps pipeline summary", "", "| Metric | Value |", "| --- | --- |"]
@@ -48,8 +57,8 @@ def main() -> int:
     if challenger:
         lines += [
             "",
-            f"Challenger `{challenger.get('model', 'n/a')}`: "
-            f"PR-AUC {challenger.get('pr_auc', 0):.4f}, ROC-AUC {challenger.get('roc_auc', 0):.4f}.",
+            f"Challenger `{challenger_name}`: PR-AUC {_fmt(challenger.get('pr_auc'))}, "
+            f"ROC-AUC {_fmt(challenger.get('roc_auc'))}, recall {_fmt(challenger.get('recall'), 3)}.",
         ]
     body = "\n".join(lines) + "\n"
 
