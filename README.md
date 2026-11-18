@@ -18,6 +18,12 @@
 
 Most portfolio ML projects stop at `model.fit()`. This one runs the full lifecycle: a failing data contract stops the pipeline, a model only reaches Production if it beats explicit gates, every prediction is logged, drift is measured against the training distribution, and a failing drift check opens a GitHub issue on a schedule. It runs end to end in about ten seconds and costs nothing to host.
 
+## Watch the demo
+
+[![ChurnOps walkthrough](docs/demo/churnops-demo-poster.png)](docs/demo/churnops-demo-720p.mp4)
+
+Seventy-nine seconds: the live dashboard, the cost-based threshold, the registry gates and a drift alert. Click the frame to play (MP4, 5 MB).
+
 ---
 
 ## The problem
