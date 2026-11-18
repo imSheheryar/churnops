@@ -8,6 +8,8 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.164-009688?logo=fastapi&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green)
+[![CI](https://github.com/imSheheryar/churnops/actions/workflows/ci.yml/badge.svg)](https://github.com/imSheheryar/churnops/actions/workflows/ci.yml)
+[![Publish](https://github.com/imSheheryar/churnops/actions/workflows/publish-image.yml/badge.svg)](https://github.com/imSheheryar/churnops/actions/workflows/publish-image.yml)
 
 ![ChurnOps live dashboard](docs/images/dashboard.png)
 
