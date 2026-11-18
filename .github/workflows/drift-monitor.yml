@@ -1,0 +1,79 @@
+name: Drift monitor
+
+on:
+  schedule:
+    # Every Monday at 06:00 UTC - a weekly production-style drift review.
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  drift:
+    name: Score a fresh batch and check for drift
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: pip install -e .
+      - name: Rebuild the reference model (deterministic seed)
+        run: churnops pipeline --no-promote
+      - name: Generate a fresh batch with simulated drift
+        run: python scripts/make_sample_batches.py
+      - name: Run the drift check
+        id: drift
+        run: |
+          set +e
+          churnops drift --input data/sample/drifted_batch.csv > drift_stdout.json
+          code=$?
+          set -e
+          cat drift_stdout.json
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          python - <<'PY'
+          import json, os
+          report = json.load(open("reports/drift_report.json"))
+          summary = os.environ["GITHUB_STEP_SUMMARY"]
+          with open(summary, "a") as handle:
+              handle.write("## Drift check\n\n")
+              handle.write(f"- Status: **{report['status']}**\n")
+              handle.write(f"- Features in alert: {len(report['alerting_features'])}\n")
+              handle.write(f"- Drift share: {report['drift_share']:.0%}\n")
+              if report["alerting_features"]:
+                  handle.write(f"- Alerting: {', '.join(report['alerting_features'])}\n")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: drift-report
+          path: |
+            reports/drift_report.html
+            reports/drift_report.json
+      - name: Open an issue when drift is significant
+        if: steps.drift.outputs.exit_code == '2'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('reports/drift_report.json', 'utf8'));
+            const body = [
+              'The scheduled drift check found **significant drift**.',
+              '',
+              `- Features in alert: ${report.alerting_features.length}`,
+              `- Drift share: ${(report.drift_share * 100).toFixed(0)}%`,
+              `- Alerting features: ${report.alerting_features.join(', ') || 'n/a'}`,
+              '',
+              'Full report is attached to the workflow run as the `drift-report` artifact.',
+              'Follow docs/runbook.md#drift-alert before retraining or rolling back.',
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Drift alert: ${report.alerting_features.slice(0, 3).join(', ')}`,
+              body,
+              labels: ['drift', 'monitoring'],
+            });

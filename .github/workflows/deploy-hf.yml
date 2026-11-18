@@ -1,0 +1,41 @@
+name: Deploy to Hugging Face Spaces
+
+on:
+  workflow_dispatch:
+    inputs:
+      space_id:
+        description: "Hugging Face Space id (user/space)"
+        required: true
+        type: string
+      private:
+        description: "Create the Space as private"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Publish the serving container
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: |
+          pip install -e .
+          pip install huggingface_hub
+      - name: Rebuild the model that ships to the Space
+        run: churnops pipeline --no-promote
+      - name: Upload to the Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          python scripts/deploy_hf_space.py \
+            --space-id "${{ inputs.space_id }}" \
+            ${{ inputs.private && '--private' || '' }}

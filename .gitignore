@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Raw and generated data (reproducible with `make data`)
+data/raw/
+data/processed/
+data/sample/*.csv
+!data/sample/README.md
+
+# Local tracking stores and logs
+artifacts/mlruns/
+artifacts/mlflow.db
+artifacts/mlflow.db-*
+artifacts/predictions.db
+artifacts/api.log
+artifacts/pipeline_run.json
+reports/batch_predictions.csv
+
+# Editor / OS noise
+.DS_Store
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+
+# Terraform state
+infra/terraform/.terraform/
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.*
+infra/terraform/crash.log
+infra/terraform/.terraform.lock.hcl
+
+# MLflow default artifact root
+mlruns/

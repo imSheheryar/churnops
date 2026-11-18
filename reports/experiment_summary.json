@@ -1,0 +1,177 @@
+{
+  "champion": "hist_gradient_boosting",
+  "threshold": 0.14,
+  "candidates": {
+    "logistic_regression": {
+      "valid": {
+        "roc_auc": 0.8445715206185567,
+        "pr_auc": 0.6302674257133742,
+        "f1": 0.506398537477148,
+        "precision": 0.3402948402948403,
+        "recall": 0.9892857142857143,
+        "brier": 0.17170983036337537,
+        "log_loss": 0.5062207639499703,
+        "threshold": 0.11000000000000001,
+        "true_positives": 277,
+        "false_positives": 537,
+        "true_negatives": 239,
+        "false_negatives": 3,
+        "support": 1056,
+        "economics_threshold": 0.11000000000000001,
+        "economics_expected_cost_per_1k": 28835.227272727272,
+        "economics_recall": 0.9892857142857143,
+        "economics_baseline_cost_per_1k": 318181.8181818182,
+        "economics_savings_per_1k": 289346.5909090909,
+        "economics_savings_pct": 90.9375
+      },
+      "test": {
+        "roc_auc": 0.8445674505631581,
+        "pr_auc": 0.6578735228912643,
+        "f1": 0.5182413470533208,
+        "precision": 0.35152284263959394,
+        "recall": 0.9857651245551602,
+        "brier": 0.1629191094999375,
+        "log_loss": 0.48182122053035853,
+        "threshold": 0.11000000000000001,
+        "true_positives": 277,
+        "false_positives": 511,
+        "true_negatives": 265,
+        "false_negatives": 4,
+        "support": 1057,
+        "economics_threshold": 0.11000000000000001,
+        "economics_expected_cost_per_1k": 28713.33964049196,
+        "economics_baseline_cost_per_1k": 319016.08325449383,
+        "economics_savings_per_1k": 290302.7436140019,
+        "economics_savings_pct": 90.99940688018981,
+        "economics_recall": 0.9857651245551602
+      }
+    },
+    "hist_gradient_boosting": {
+      "valid": {
+        "roc_auc": 0.8421184646539028,
+        "pr_auc": 0.6425039651204472,
+        "f1": 0.5240847784200385,
+        "precision": 0.35883905013192613,
+        "recall": 0.9714285714285714,
+        "brier": 0.16312728373678947,
+        "log_loss": 0.488663103848172,
+        "threshold": 0.14,
+        "true_positives": 272,
+        "false_positives": 486,
+        "true_negatives": 290,
+        "false_negatives": 8,
+        "support": 1056,
+        "economics_threshold": 0.14,
+        "economics_expected_cost_per_1k": 32102.272727272728,
+        "economics_recall": 0.9714285714285714,
+        "economics_baseline_cost_per_1k": 318181.8181818182,
+        "economics_savings_per_1k": 286079.54545454547,
+        "economics_savings_pct": 89.91071428571429
+      },
+      "test": {
+        "roc_auc": 0.8393944674762446,
+        "pr_auc": 0.6615643796466477,
+        "f1": 0.5326732673267327,
+        "precision": 0.36899862825788754,
+        "recall": 0.9572953736654805,
+        "brier": 0.15837836574495098,
+        "log_loss": 0.47256512879158097,
+        "threshold": 0.14,
+        "true_positives": 269,
+        "false_positives": 460,
+        "true_negatives": 316,
+        "false_negatives": 12,
+        "support": 1057,
+        "economics_threshold": 0.14,
+        "economics_expected_cost_per_1k": 35383.15988647115,
+        "economics_baseline_cost_per_1k": 319016.08325449383,
+        "economics_savings_per_1k": 283632.92336802266,
+        "economics_savings_pct": 88.90865954922893,
+        "economics_recall": 0.9572953736654805
+      }
+    }
+  },
+  "champion_test_metrics": {
+    "roc_auc": 0.8393944674762446,
+    "pr_auc": 0.6615643796466477,
+    "f1": 0.5326732673267327,
+    "precision": 0.36899862825788754,
+    "recall": 0.9572953736654805,
+    "brier": 0.15837836574495098,
+    "log_loss": 0.47256512879158097,
+    "threshold": 0.14,
+    "true_positives": 269,
+    "false_positives": 460,
+    "true_negatives": 316,
+    "false_negatives": 12,
+    "support": 1057,
+    "economics_threshold": 0.14,
+    "economics_expected_cost_per_1k": 35383.15988647115,
+    "economics_baseline_cost_per_1k": 319016.08325449383,
+    "economics_savings_per_1k": 283632.92336802266,
+    "economics_savings_pct": 88.90865954922893,
+    "economics_recall": 0.9572953736654805
+  },
+  "feature_importance": [
+    {
+      "feature": "Contract",
+      "importance": 0.15294507387530631
+    },
+    {
+      "feature": "tenure",
+      "importance": 0.039451401311866384
+    },
+    {
+      "feature": "InternetService",
+      "importance": 0.018657655866958073
+    },
+    {
+      "feature": "TechSupport",
+      "importance": 0.006307559795931709
+    },
+    {
+      "feature": "PaperlessBilling",
+      "importance": 0.0044961240310076684
+    },
+    {
+      "feature": "MonthlyCharges",
+      "importance": 0.003306168422447353
+    },
+    {
+      "feature": "TotalCharges",
+      "importance": 0.0030371695487973285
+    },
+    {
+      "feature": "PaymentMethod",
+      "importance": 0.0025561518584773144
+    },
+    {
+      "feature": "StreamingMovies",
+      "importance": 0.0018843172331542608
+    },
+    {
+      "feature": "OnlineSecurity",
+      "importance": 0.0015437620088782171
+    },
+    {
+      "feature": "SeniorCitizen",
+      "importance": 0.0011581527860597223
+    },
+    {
+      "feature": "OnlineBackup",
+      "importance": 0.0010971973762671599
+    },
+    {
+      "feature": "Partner",
+      "importance": 0.000471741867090647
+    },
+    {
+      "feature": "MultipleLines",
+      "importance": 0.0004558404558403506
+    },
+    {
+      "feature": "PhoneService",
+      "importance": 0.000426687868548233
+    }
+  ]
+}

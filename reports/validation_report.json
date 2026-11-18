@@ -1,0 +1,68 @@
+{
+  "ok": true,
+  "rows": 7043,
+  "columns": 21,
+  "generated_at": "2026-11-18T17:32:26.781908+00:00",
+  "checks": [
+    {
+      "name": "required_columns",
+      "passed": true,
+      "severity": "critical",
+      "detail": "all required columns present"
+    },
+    {
+      "name": "row_count",
+      "passed": true,
+      "severity": "critical",
+      "detail": "7043 rows (minimum 500)"
+    },
+    {
+      "name": "unique_customer_id",
+      "passed": true,
+      "severity": "critical",
+      "detail": "0 duplicate customer ids"
+    },
+    {
+      "name": "target_domain",
+      "passed": true,
+      "severity": "critical",
+      "detail": "target values valid"
+    },
+    {
+      "name": "target_balance",
+      "passed": true,
+      "severity": "warning",
+      "detail": "positive rate 0.265"
+    },
+    {
+      "name": "numeric_ranges",
+      "passed": true,
+      "severity": "critical",
+      "detail": "out-of-range tenure=0, monthly_charges=0"
+    },
+    {
+      "name": "total_charges_numeric",
+      "passed": true,
+      "severity": "warning",
+      "detail": "0.16% of TotalCharges values are not numeric"
+    },
+    {
+      "name": "null_share",
+      "passed": true,
+      "severity": "critical",
+      "detail": "highest null share 0.00% in 'customerID'"
+    },
+    {
+      "name": "categorical_domains",
+      "passed": true,
+      "severity": "warning",
+      "detail": "all categorical values known"
+    },
+    {
+      "name": "duplicate_rows",
+      "passed": true,
+      "severity": "warning",
+      "detail": "0 duplicate rows"
+    }
+  ]
+}

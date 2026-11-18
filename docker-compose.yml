@@ -1,0 +1,45 @@
+# Local production-like stack: API + a Prometheus scraper.
+#   docker compose up --build
+#   API        http://localhost:8000/dashboard
+#   Prometheus http://localhost:9090
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: churnops:local
+    ports:
+      - "8000:8000"
+    environment:
+      CHURNOPS_LOG_LEVEL: INFO
+      PORT: "8000"
+    volumes:
+      # Persist scored requests and feedback between container restarts.
+      - churnops-data:/app/artifacts
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request;urllib.request.urlopen('http://127.0.0.1:8000/health').read()"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  churnops-data:
+  prometheus-data:
