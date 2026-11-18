@@ -157,16 +157,21 @@ flowchart TB
     CI -->|lint, tests, smoke pipeline| CI
     CI -->|build| IMG[Container image]
     IMG -->|push| GHCR[(GHCR)]
-    IMG -->|deploy| HF[Hugging Face Space<br/>free CPU, port 7860]
+    GH -->|blueprint| RD[Render free web service<br/>512 MB, scale to zero]
+    GHCR -.->|optional| HF[Hugging Face Space<br/>PRO plan, port 7860]
     GHCR -.->|optional| CR[GCP Cloud Run<br/>free tier, billing required]
-    HF --> USER[Recruiters / reviewers]
+    RD --> USER[Recruiters / reviewers]
+    HF -.-> USER
     CR -.-> USER
 ```
 
-Hugging Face Spaces is the default because it needs no credit card: the Docker
-SDK runs the same image used everywhere else, on a free CPU instance. Cloud Run
-is provided as Terraform for teams that already have a billing account, with
-`max_instances` and scale-to-zero as cost guardrails.
+Render is the default because it is the last free container host that asks for no
+card: `render.yaml` builds the same Dockerfile used everywhere else and Render
+injects `PORT`, so no code branches per platform. Hugging Face Spaces moved
+behind a PRO subscription in July 2026 (the API returns `402` on free hardware),
+so it is kept as an optional path rather than the headline. Cloud Run is provided
+as Terraform for teams that already have a billing account, with `max_instances`
+and scale-to-zero as cost guardrails.
 
 ## Repository layout
 
@@ -181,6 +186,7 @@ pipelines/run_pipeline.py   end-to-end orchestration with stage timings
 scripts/               demo traffic, sample batches, HF deployment, CI summary
 tests/                 contracts, drift maths, API integration
 infra/terraform/       optional Cloud Run stack
-deploy/hf-spaces/      Space Dockerfile + metadata
+deploy/hf-spaces/      optional Space Dockerfile + metadata (PRO plan)
+render.yaml            free-tier blueprint for the live demo
 docs/                  architecture, runbook, ADRs, model card, screenshots
 ```

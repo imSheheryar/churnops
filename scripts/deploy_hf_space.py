@@ -8,6 +8,10 @@ Usage
 The script assembles a minimal Space repository (code, serving requirements,
 model artefacts, drift reports and the Dockerfile) in a temporary directory and
 uploads it. Re-running it updates the Space in place.
+
+Note: since July 2026 Hugging Face requires a PRO plan for Docker Spaces on
+``cpu-basic``; without one, ``create_repo`` fails with 402 Payment Required. The
+free deployment path is the Render blueprint at the repository root.
 """
 
 from __future__ import annotations
@@ -42,7 +46,11 @@ def stage(target: Path) -> Path:
         destination = target / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         if source.is_dir():
-            shutil.copytree(source, destination, ignore=shutil.ignore_patterns("__pycache__"))
+            shutil.copytree(
+                source,
+                destination,
+                ignore=shutil.ignore_patterns("__pycache__", "*.egg-info"),
+            )
         else:
             shutil.copy2(source, destination)
     shutil.copy2(ROOT / "deploy" / "hf-spaces" / "Dockerfile", target / "Dockerfile")

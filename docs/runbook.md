@@ -105,4 +105,23 @@ In a real deployment this table belongs in BigQuery or Postgres; the interface i
 | `ci.yml` | every push / PR | lint, tests, smoke pipeline, image build |
 | `publish-image.yml` | push to `main`, tags | build and push the image to GHCR |
 | `drift-monitor.yml` | Mondays 06:00 UTC | score a drifted batch, open an issue on alert |
-| `deploy-hf.yml` | manual | publish the serving container to a Hugging Face Space |
+| `deploy-hf.yml` | manual | publish to a Hugging Face Space (PRO plan only since Jul 2026) |
+
+## Deploying the live demo
+
+Render builds the service from `render.yaml`, so there is nothing to run by hand:
+
+1. Dashboard -> *New -> Blueprint*, connect the repository, apply the plan.
+2. Wait for the first build; Render gates it on `GET /health` returning 200.
+3. Note the `https://<service>.onrender.com` URL and set it as the repository
+   homepage.
+
+Free instances sleep after fifteen minutes without traffic and take about a
+minute to wake, so the first click from a recruiter is slower than the rest. If a
+deploy fails, read the build log first: the usual causes are a missing artefact
+in the image (`artifacts/model.joblib`) or an import that only exists in the
+training extras, which `requirements-serve.txt` deliberately omits.
+
+The Hugging Face path is no longer free: `create_repo` returns `402 Payment
+Required` for Docker Spaces on `cpu-basic`. Do not debug it as an application
+fault.

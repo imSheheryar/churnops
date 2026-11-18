@@ -172,22 +172,22 @@ Thresholds follow the usual PSI convention: below 0.10 stable, 0.10-0.20 warning
 
 ## Deployment (zero cost)
 
-Three paths, documented in [docs/adr/0004-free-tier-deployment.md](docs/adr/0004-free-tier-deployment.md):
+Four paths, documented in [docs/adr/0004-free-tier-deployment.md](docs/adr/0004-free-tier-deployment.md). The live demo uses Render's free Docker plan: 512 MB RAM, 0.1 CPU, no credit card, and the instance sleeps after fifteen minutes of silence.
 
-**Hugging Face Spaces (default, no credit card).** The Space runs the same serving container on port 7860:
-
-```bash
-pip install huggingface_hub
-export HF_TOKEN=hf_xxx
-python scripts/deploy_hf_space.py --space-id your-username/churnops
-```
-
-Or run the `Deploy to Hugging Face Spaces` workflow manually with your Space id and an `HF_TOKEN` secret. The script stages the code, model artefacts and drift reports, then uploads them, so re-running it updates the live demo in place.
+**Render (default).** The repository ships a [`render.yaml`](render.yaml) blueprint. In the Render dashboard choose *New -> Blueprint*, connect this repository and apply. Render builds `docker/Dockerfile`, injects `PORT` (the entrypoint already binds to `${PORT}`) and gates the deploy on `/health`. The first request after a quiet spell takes roughly a minute while the instance wakes, which is the price of a free tier that never expires.
 
 **GitHub Container Registry.** `publish-image.yml` builds and pushes on every push to `main`:
 
 ```bash
 docker run -p 8000:8000 ghcr.io/<owner>/churnops:latest
+```
+
+**Hugging Face Spaces (now needs a PRO plan).** The Space assets still work, but since July 2026 Hugging Face rejects Docker Spaces on free hardware with `402 Payment Required`, so this path only applies to subscribers:
+
+```bash
+pip install huggingface_hub
+export HF_TOKEN=hf_xxx
+python scripts/deploy_hf_space.py --space-id your-username/churnops
 ```
 
 **GCP Cloud Run (optional, needs a billing account).** Terraform provisions Artifact Registry, a runtime service account and a scale-to-zero Cloud Run service:
@@ -223,9 +223,10 @@ git push -u origin main
 ```
 
 The first push triggers CI. `publish-image.yml` pushes an image to GHCR using the
-repository's `GITHUB_TOKEN`, so no extra secret is needed. For the Space
-deployment, add an `HF_TOKEN` repository secret (Settings -> Secrets and
-variables -> Actions) and run the `Deploy to Hugging Face Spaces` workflow.
+repository's `GITHUB_TOKEN`, so no extra secret is needed. The Render deploy needs
+no secrets at all: connect the repository through the dashboard blueprint and
+every push to `main` rebuilds the service. The optional Space workflow still
+expects an `HF_TOKEN` secret (Settings -> Secrets and variables -> Actions).
 
 ## Tests and CI
 

@@ -1,0 +1,19 @@
+# Render blueprint - free Docker web service, no credit card required.
+#
+# Deploy: Render Dashboard -> New -> Blueprint -> pick this repository.
+# Render injects PORT; the image already binds to ${PORT} and exposes /health.
+services:
+  - type: web
+    name: churnops
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./docker/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: CHURNOPS_HOME
+        value: /app
+      - key: PYTHONUNBUFFERED
+        value: "1"

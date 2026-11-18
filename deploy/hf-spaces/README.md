@@ -12,6 +12,10 @@ short_description: Churn prediction API with drift monitoring and a live dashboa
 
 # ChurnOps - live demo
 
+> Requires a Hugging Face PRO plan: since July 2026 Docker Spaces on free
+> `cpu-basic` hardware are rejected with `402 Payment Required`. The free
+> alternative is the Render blueprint at the repository root.
+
 Customer-churn inference API built with FastAPI, scikit-learn and MLflow. This
 Space runs the serving container only; the full pipeline (validation, training,
 model registry gates, drift reports) lives in the GitHub repository.
