@@ -21,5 +21,6 @@ tests
 infra
 deploy
 docs/images
+docs/demo
 NOTES_INTERNAL.md
 *.zip
