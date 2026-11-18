@@ -10,8 +10,11 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 [![CI](https://github.com/imSheheryar/churnops/actions/workflows/ci.yml/badge.svg)](https://github.com/imSheheryar/churnops/actions/workflows/ci.yml)
 [![Publish](https://github.com/imSheheryar/churnops/actions/workflows/publish-image.yml/badge.svg)](https://github.com/imSheheryar/churnops/actions/workflows/publish-image.yml)
+[![Live demo](https://img.shields.io/badge/live%20demo-onrender-46E3B7?logo=render&logoColor=white)](https://churnops-w0nb.onrender.com/dashboard)
 
 ![ChurnOps live dashboard](docs/images/dashboard.png)
+
+**Live demo: [churnops-w0nb.onrender.com](https://churnops-w0nb.onrender.com/dashboard)** - open the dashboard, or call `/predict` directly. It runs on a free Render instance, so the first request after fifteen idle minutes waits about a minute while the container wakes.
 
 Most portfolio ML projects stop at `model.fit()`. This one runs the full lifecycle: a failing data contract stops the pipeline, a model only reaches Production if it beats explicit gates, every prediction is logged, drift is measured against the training distribution, and a failing drift check opens a GitHub issue on a schedule. It runs end to end in about ten seconds and costs nothing to host.
 
@@ -175,6 +178,8 @@ Thresholds follow the usual PSI convention: below 0.10 stable, 0.10-0.20 warning
 Four paths, documented in [docs/adr/0004-free-tier-deployment.md](docs/adr/0004-free-tier-deployment.md). The live demo uses Render's free Docker plan: 512 MB RAM, 0.1 CPU, no credit card, and the instance sleeps after fifteen minutes of silence.
 
 **Render (default).** The repository ships a [`render.yaml`](render.yaml) blueprint. In the Render dashboard choose *New -> Blueprint*, connect this repository and apply. Render builds `docker/Dockerfile`, injects `PORT` (the entrypoint already binds to `${PORT}`) and gates the deploy on `/health`. The first request after a quiet spell takes roughly a minute while the instance wakes, which is the price of a free tier that never expires.
+
+The instance backing the badge above is <https://churnops-w0nb.onrender.com>; `render.yaml` recreates it from scratch in about five minutes.
 
 **GitHub Container Registry.** `publish-image.yml` builds and pushes on every push to `main`:
 
